@@ -6,8 +6,18 @@ type Link = {
     url: string;
 };
 
-const Home: React.FC = () => {
+const Home = () => {
     const [links, setLinks] = useState<Link[]>([]);
+    const [isFormVisible, setIsFormVisible] = useState(false);
+    const [savedLinks, setSavedLinks] = useState<Link[]>([]);
+
+    const handleSaveClick = () => {
+        const uniqueLinks = links.filter(
+            (link) => !savedLinks.some((savedLink) => savedLink.url === link.url)
+        );
+        setSavedLinks([...savedLinks, ...uniqueLinks]);
+        setIsFormVisible(!isFormVisible);
+    };
 
     const addLink = () => {
         setLinks([...links, { platform: '', url: '' }]);
@@ -25,37 +35,92 @@ const Home: React.FC = () => {
         setLinks(newLinks);
     };
 
+    const handleEditClick = (index: number) => {
+        const newLinks = [...savedLinks];
+        const newLink = prompt("Edit the link URL:", savedLinks[index].url);
+        const newPlatform = prompt("Edit the platform:", savedLinks[index].platform);
+        if (newLink && newPlatform) {
+            newLinks[index] = { ...newLinks[index], url: newLink, platform: newPlatform };
+            setSavedLinks(newLinks);
+        }
+    };
+
     return (
         <div>
             <Navbar />
-
             <div>
                 <div className='container mx-auto p-8'>
                     <div className="flex space-x-8">
                         {/* Phone Preview */}
-                        <div className="bg-white rounded p-4 w-1/3 lg:flex md:hidden xxs:hidden xs:hidden justify-center items-center sm:hidden ">
-                            <div className="w-48 h-96 flex items-center justify-center">
-                                {/* Placeholder for phone content */}
-                                <svg width="308" height="632" viewBox="0 0 308 632" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 54.5C1 24.9528 24.9528 1 54.5 1H253.5C283.047 1 307 24.9528 307 54.5V577.5C307 607.047 283.047 631 253.5 631H54.5C24.9528 631 1 607.047 1 577.5V54.5Z" stroke="#737373" />
-                                    <path d="M12 55.5C12 30.9233 31.9233 11 56.5 11H80.5C86.8513 11 92 16.1487 92 22.5C92 30.5081 98.4919 37 106.5 37H201.5C209.508 37 216 30.5081 216 22.5C216 16.1487 221.149 11 227.5 11H251.5C276.077 11 296 30.9233 296 55.5V576.5C296 601.077 276.077 621 251.5 621H56.5C31.9233 621 12 601.077 12 576.5V55.5Z" fill="white" stroke="#737373" />
-                                    <circle cx="153.5" cy="112" r="48" fill="#EEEEEE" />
-                                    <rect x="73.5" y="185" width="160" height="16" rx="8" fill="#EEEEEE" />
-                                    <rect x="117.5" y="214" width="72" height="8" rx="4" fill="#EEEEEE" />
-                                    <rect x="35" y="278" width="237" height="44" rx="8" fill="#EEEEEE" />
-                                    <rect x="35" y="342" width="237" height="44" rx="8" fill="#EEEEEE" />
-                                    <rect x="35" y="406" width="237" height="44" rx="8" fill="#EEEEEE" />
-                                    <rect x="35" y="470" width="237" height="44" rx="8" fill="#EEEEEE" />
-                                    <rect x="35" y="534" width="237" height="44" rx="8" fill="#EEEEEE" />
-                                </svg>
+                        <div className="bg-white rounded p-4 w-1/3 lg:flex md:hidden xxs:hidden xs:hidden justify-center items-center sm:hidden">
+                            <div className="w-80 h-96 flex items-center justify-center">
+                                {savedLinks.length === 0 ? (
+                                    <svg width="308" height="450" viewBox="0 0 308 632" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 54.5C1 24.9528 24.9528 1 54.5 1H253.5C283.047 1 307 24.9528 307 54.5V577.5C307 607.047 283.047 631 253.5 631H54.5C24.9528 631 1 607.047 1 577.5V54.5Z" stroke="#737373" />
+                                        <path d="M12 55.5C12 30.9233 31.9233 11 56.5 11H80.5C86.8513 11 92 16.1487 92 22.5C92 30.5081 98.4919 37 106.5 37H201.5C209.508 37 216 30.5081 216 22.5C216 16.1487 221.149 11 227.5 11H251.5C276.077 11 296 30.9233 296 55.5V576.5C296 601.077 276.077 621 251.5 621H56.5C31.9233 621 12 601.077 12 576.5V55.5Z" fill="white" stroke="#737373" />
+                                        <circle cx="153.5" cy="112" r="48" fill="#EEEEEE" />
+                                        <rect x="73.5" y="185" width="160" height="16" rx="8" fill="#EEEEEE" />
+                                        <rect x="117.5" y="214" width="72" height="8" rx="4" fill="#EEEEEE" />
+                                        <rect x="35" y="278" width="237" height="44" rx="8" fill="#EEEEEE" />
+                                        <rect x="35" y="342" width="237" height="44" rx="8" fill="#EEEEEE" />
+                                        <rect x="35" y="406" width="237" height="44" rx="8" fill="#EEEEEE" />
+                                        <rect x="35" y="470" width="237" height="44" rx="8" fill="#EEEEEE" />
+                                        <rect x="35" y="534" width="237" height="44" rx="8" fill="#EEEEEE" />
+                                    </svg>
+                                ) : (
+                                    <div className="bg-white rounded-3xl p-4 max-w-sm w-full mb-8 mt-2 pb-40 border border-black">
+                                        <div className="flex flex-col items-center space-y-4">
+                                            <div className="relative w-24 h-24">
+                                                <img
+                                                    src="{profileImage}"
+                                                    alt="ProfileImage"
+                                                    className="rounded-full object-cover w-full h-full"
+                                                />
+                                            </div>
+                                            <div className="text-gray-900 text-lg font-semibold">Name Placeholder</div>
+                                            <div className="text-gray-500 text-sm">email@example.com</div>
+                                        </div>
+                                        <div className="mt-6 space-y-5">
+                                            {savedLinks.map((link, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={link.url}
+                                                    className={`flex items-center justify-between px-4 py-3 rounded-lg mb-5 ${link.platform.toLowerCase() === 'youtube'
+                                                            ? 'bg-red-500'
+                                                            : link.platform.toLowerCase() === 'linkedin'
+                                                                ? 'bg-blue-500'
+                                                                : 'bg-black'
+                                                        } text-white`}
+                                                >
+                                                    <span className="flex items-center space-x-2">
+                                                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                                            {/* Add your SVG path here */}
+                                                        </svg>
+                                                        <span>{link.platform}</span>
+                                                    </span>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleEditClick(index);
+                                                        }}
+                                                        className="bg-gray-800 text-white py-1 px-2 rounded"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         {/* Customize Links Section */}
                         <div className="bg-white p-8 w-2/3">
                             <h1 className="text-2xl font-bold mb-4">Customize your links</h1>
                             <p className="text-gray-600 mb-6">Add/edit/remove links below and then share all your profiles with the world!</p>
-                            <button onClick={addLink} className="bg-purple-100 w-full text-purple-600 py-2 px-4 rounded mb-6">+ Add new link</button>
-
+                            <button onClick={addLink} className="bg-purple-100 w-full text-purple-600 py-2 px-4 rounded mb-6">
+                                + Add new link
+                            </button>
                             {links.length === 0 ? (
                                 <div className="bg-gray-50 p-8 rounded-lg text-center">
                                     <div className='flex justify-center items-center mx-auto mb-4'>
@@ -98,14 +163,12 @@ const Home: React.FC = () => {
                                             <path d="M141.495 160.5L141.206 111.594L111.525 105.079L99.574 160.5H141.495Z" fill="#633CFF" />
                                             <path opacity="0.1" d="M141.495 160.5L141.206 111.594L127.038 108.48L124.502 160.5H141.495Z" fill="#333333" />
                                         </svg>
-
                                     </div>
                                     <h2 className="text-lg font-semibold mb-2">Getting started</h2>
                                     <p className="text-gray-600">Start adding links to see the preview!</p>
                                 </div>
                             ) : (
                                 links.map((link, index) => (
-
                                     <div key={index} className="bg-gray-50 p-4 rounded-lg mb-4">
                                         <div className="flex justify-between mb-2">
                                             <span className="font-semibold">Link #{index + 1}</span>
@@ -125,12 +188,13 @@ const Home: React.FC = () => {
                                             onChange={(e) => handleInputChange(index, 'url', e.target.value)}
                                             className="border p-2 rounded w-full mb-2"
                                         />
-
                                     </div>
                                 ))
                             )}
                             <div className="text-center flex justify-end items-end my-8">
-                                <button className="bg-purple-600 text-white py-2 px-4 rounded-lg">Save</button>
+                                <button className="bg-purple-600 text-white py-2 px-4 rounded-lg" onClick={handleSaveClick}>
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </div>

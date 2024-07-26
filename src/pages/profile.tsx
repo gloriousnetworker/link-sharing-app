@@ -30,42 +30,42 @@ const Profile = () => {
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            if (reader.result && typeof reader.result === 'string') {
-              setProfileImage(reader.result);
-            }
-          };
-          reader.readAsDataURL(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                if (reader.result && typeof reader.result === 'string') {
+                    setProfileImage(reader.result);
+                }
+            };
+            reader.readAsDataURL(file);
         }
-      };
+    };
 
-      const triggerFileInput = () => {
+    const triggerFileInput = () => {
         const fileInput = document.getElementById('profileImageInput') as HTMLInputElement | null;
         if (fileInput) {
-          fileInput.click();
+            fileInput.click();
         }
-      };
+    };
 
-      const handleShare = async () => {
+    const handleShare = async () => {
         if (navigator.share) {
-          try {
-            await navigator.share({
-              title: 'Check out this link!',
-              text: 'Here is a link I want to share with you.',
-              url: window.location.href, // You can change this to any link you want to share
-            });
-            console.log('Link shared successfully');
-          } catch (error) {
-            console.error('Error sharing the link:', error);
-          }
+            try {
+                await navigator.share({
+                    title: 'Check out this link!',
+                    text: 'Here is a link I want to share with you.',
+                    url: window.location.href, // You can change this to any link you want to share
+                });
+                console.log('Link shared successfully');
+            } catch (error) {
+                console.error('Error sharing the link:', error);
+            }
         } else {
-          console.log('Web Share API is not supported in this browser.');
+            console.log('Web Share API is not supported in this browser.');
         }
-      };
-    
-    
-    
+    };
+
+
+
     return (
         <div>
             <Navbar />
@@ -82,7 +82,7 @@ const Profile = () => {
                                         <div className="relative w-24 h-24">
                                             <img
                                                 src="{profileImage}"
-                                                alt="Profile"
+                                                alt="ProfileImage"
                                                 className="rounded-full object-cover w-full h-full"
                                             />
                                         </div>
@@ -132,7 +132,7 @@ const Profile = () => {
                                 {/* Profile Picture Card */}
                                 <div className="bg-gray-50 p-8 rounded shadow">
                                     <div className="flex items-center justify-between mb-8">
-                                        <div className="text-gray-700 text-sm font-bold">Profile picture</div>
+                                        <div className="text-gray-700 text-sm font-bold" > Profile picture</div>
                                         <div className="flex flex-col items-center bg-purple-100 rounded-lg p-8">
                                             <div className="text-purple-500">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 20 20" fill="currentColor">
@@ -141,12 +141,12 @@ const Profile = () => {
                                             </div>
                                             <button className="text-purple-500 mt-4" onClick={triggerFileInput}>+ Upload Image</button>
                                             <input
-              type="file"
-              id="profileImageInput"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageUpload}
-            />
+                                                type="file"
+                                                id="profileImageInput"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={handleImageUpload}
+                                            />
                                         </div>
                                         <div className="text-gray-500 text-sm">
                                             Image must be below 1024x1024px.<br />
